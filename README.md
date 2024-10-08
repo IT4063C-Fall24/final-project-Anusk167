@@ -1,4 +1,4 @@
-# Final-Project-Template
+# Global Poverty
 <!-- Edit the title above with your project title -->
 
 ## Project Overview
@@ -7,25 +7,30 @@
 
 <!-- Edit the following section with your self assessment and reflection -->
 
+
 ### Self Assessment
 <!-- Replace the (...) with your score -->
 
 | Category          | Score    |
 | ----------------- | -------- |
-| **Setup**         | ... / 10 |
-| **Execution**     | ... / 20 |
-| **Documentation** | ... / 10 |
-| **Presentation**  | ... / 30 |
-| **Total**         | ... / 70 |
+| **Setup**         | 10 / 10 |
+| **Execution**     | 20 / 20 |
+| **Documentation** | 5 / 10 |
+| **Presentation**  | 20 / 30 |
+| **Total**         | 55 / 70 |
 
 ### Reflection
 <!-- Edit the following section with your reflection -->
+- This task was a little challenging for me as it took me a while to understand the scope of what this task wanted. After spending some time, I think I have put together a good initial plan for how I will approach the final project.
 
 #### What went well?
+- Coming up with realistic deliverables.
 #### What did not go well?
+- Finding appropriate datasets.
 #### What did you learn?
+- Calling APIs.
 #### What would you do differently next time?
-
+- Narrow my search for datasets by asking some questions to myself.
 ---
 
 ## Getting Started
