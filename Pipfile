@@ -10,6 +10,7 @@ notebook = "*"
 black = "*"
 requests = "*"
 pandas = "*"
+matplotlib = "*"
 
 [dev-packages]
 
