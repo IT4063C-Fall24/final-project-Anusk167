@@ -11,6 +11,8 @@ black = "*"
 requests = "*"
 pandas = "*"
 matplotlib = "*"
+seaborn = "*"
+scikit-learn = "*"
 
 [dev-packages]
 
