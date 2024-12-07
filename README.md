@@ -6,7 +6,7 @@
 ## Self Assessment and Reflection
 
 <!-- Edit the following section with your self assessment and reflection -->
-
+This project was a culmination of everything that we learned and felt like something that I would work on professionally. It was a lot of learning and I believe that the project has prepared me to handle such tasks with a newfound confidence.
 
 ### Self Assessment
 <!-- Replace the (...) with your score -->
@@ -14,10 +14,10 @@
 | Category          | Score    |
 | ----------------- | -------- |
 | **Setup**         | 10 / 10 |
-| **Execution**     | 20 / 20 |
-| **Documentation** | 5 / 10 |
-| **Presentation**  | 20 / 30 |
-| **Total**         | 55 / 70 |
+| **Execution**     | 15 / 20 |
+| **Documentation** | 10 / 10 |
+| **Presentation**  | 25/ 30 |
+| **Total**         | 60 / 70 |
 
 ### Reflection
 <!-- Edit the following section with your reflection -->

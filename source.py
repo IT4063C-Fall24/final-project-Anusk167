@@ -9,7 +9,7 @@
 # *What problem are you (or your stakeholder) trying to address?*
 # 📝 <!-- Answer Below -->
 # 
-# I am trying to observe trends in global poverty rates and identify trends and patterns in events that caused a significant shift in poverty rates, for better or for worse.
+# I am trying to observe how well HDI and Unemployment rates perform as predictors for Global Poverty
 
 # ## Project Question
 # *What specific question are you seeking to answer with this project?*
@@ -25,7 +25,7 @@
 # *What is your hypothesized answer to your question?*
 # 📝 <!-- Answer Below -->
 # 
-# Identifying significant events, whether they are economic, political natural, etc., and finding a pattern in such events that have been heavily linked with swaying the global poverty rate. 
+# - HDI and Unemployment are(inversely/ directly) proportional to Global Poverty. While 'X' seems to have a minor correlation to the target variable, 'Y' seems to be a strong indicator of the target variable
 
 # ## Data Sources
 # *What 3 data sources have you identified for this project?*
@@ -38,7 +38,7 @@
 # 
 # 
 
-# In[25]:
+# In[53]:
 
 
 import pandas as pd
@@ -77,7 +77,7 @@ unemployment_data.head(5)
 # 📝 <!-- Start Discussing the project here; you can add as many code cells as you need -->
 # I intend to make use of the vast arrays of metrics available in these 3 databases to find trends that either positively or negatively affect global poverty rates. One of the datasets that I'm using is the HDI dataset that has a comprehensive array of metrics, one of which is literacy rate. Along with this dataset, the two other datasets have similar metrics that one would think of as fundamental metrics that might affect the poverty rates. As the project is in its early stages, I don't have a solid roadmap, but I'm confident that I have picked the right datasets that will provide me a wealth of data to perform my analysis on.
 
-# In[26]:
+# In[54]:
 
 
 # Getting distribution on all three datasets
@@ -85,7 +85,7 @@ unemployment_data.head(5)
 display(glo_poverty.describe(), unemployment_data.describe(), hdi_full.describe())
 
 
-# In[27]:
+# In[55]:
 
 
 # Getting information on all three datasets
@@ -93,7 +93,7 @@ display(glo_poverty.describe(), unemployment_data.describe(), hdi_full.describe(
 display(glo_poverty.info(), "\n", unemployment_data.info(), "\n", hdi_full.info())
 
 
-# In[28]:
+# In[56]:
 
 
 ###Finding the min and max value for 'year' to filter data based on availability.
@@ -115,7 +115,7 @@ display(hdi.sort_values(by='date').head(1), hdi.sort_values(by='date', ascending
 
 
 
-# In[29]:
+# In[57]:
 
 
 ### Filtering all dataframes to only include the dates present in all three dataframes
@@ -129,7 +129,7 @@ unemployment_data['date'].describe().loc[['min', 'max']],
 hdi['date'].describe().loc[['min', 'max']])
 
 
-# In[30]:
+# In[58]:
 
 
 ### Filtering datasets to only keep relevant records
@@ -142,7 +142,7 @@ display(glo_poverty_final['country'].nunique(), glo_poverty['country'].nunique()
 
 
 
-# In[31]:
+# In[59]:
 
 
 unemployment_data.head()
@@ -153,7 +153,7 @@ unemployment_data = unemployment_data[(unemployment_data['source.label'] == 'LFS
 display(unemployment_data.sort_values(by=['ref_area.label', 'date']).head(100))
 
 
-# In[32]:
+# In[60]:
 
 
 ### A line chart showing the trend of HDI in all countries with data available. Overall, we can see that a positive trend in the global scale.
@@ -164,7 +164,7 @@ for country, group_data in hdi.groupby('Country'):
 plt.show()
 
 
-# In[33]:
+# In[61]:
 
 
 # Comparing the last figure with HDI trend overtime for the countries with the top 10 countries with the least HDI values in 1991, we can see
@@ -206,7 +206,7 @@ plt.show()
 # <br><br>
 # <b>EDA:</b>
 
-# In[34]:
+# In[62]:
 
 
 display(glo_poverty_final.info(), hdi.info(), unemployment_data.info())
@@ -230,32 +230,32 @@ glo_poverty_final.head()
 
 
 
-# In[35]:
+# In[63]:
 
 
 display(hdi.head(), unemployment_final.head(), glo_poverty_final.head())
 
 
-# In[36]:
+# In[64]:
 
 
 import seaborn as sns
 sns.histplot(hdi['HDI'], kde=True)
 
 
-# In[37]:
+# In[65]:
 
 
 sns.histplot(unemployment_final['Unemployment_rate'], kde=True)
 
 
-# In[38]:
+# In[66]:
 
 
 sns.histplot(glo_poverty_final['Poverty_rate'], kde=True)
 
 
-# In[39]:
+# In[67]:
 
 
 merged_df = pd.merge(hdi, unemployment_final, on=['Country', 'date'], how='inner')
@@ -263,7 +263,7 @@ final_df = pd.merge(merged_df, glo_poverty_final, on=['Country', 'date'], how='i
 final_df.head()
 
 
-# In[40]:
+# In[68]:
 
 
 corr_matrix = final_df[['HDI', 'Unemployment_rate', 'Poverty_rate']].corr()
@@ -272,7 +272,7 @@ sns.heatmap(corr_matrix, annot=True, cmap='coolwarm')
 
 # - Scatter plots
 
-# In[50]:
+# In[69]:
 
 
 import seaborn as sns
@@ -280,14 +280,14 @@ sns.pairplot(hdi, diag_kind='kde', markers='+')
 plt.show()
 
 
-# In[51]:
+# In[70]:
 
 
 sns.pairplot(unemployment_final, diag_kind='kde', markers='+')
 plt.show()
 
 
-# In[52]:
+# In[71]:
 
 
 sns.pairplot(glo_poverty_final, diag_kind='kde', markers='+')
@@ -296,7 +296,7 @@ plt.show()
 
 # <b>Prepare</b>
 
-# In[41]:
+# In[72]:
 
 
 from sklearn.model_selection import train_test_split
@@ -311,7 +311,7 @@ X_test, y_test = test_data[['HDI', 'Unemployment_rate']], test_data['Poverty_rat
 
 # - <b>Pipelines</b>
 
-# In[42]:
+# In[73]:
 
 
 from sklearn.pipeline import Pipeline
@@ -319,7 +319,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
-from sklearn.metrics import root_mean_squared_error
+from sklearn.metrics import root_mean_squared_error, r2_score
 
 # Defining numerical and categorical columns
 numerical_columns = ['HDI', 'Unemployment_rate', 'Poverty_rate']
@@ -341,13 +341,14 @@ df_cleaned_encoded = preprocessing_pipeline.fit_transform(final_df)
 
 # - Analysis
 
-# In[43]:
+# In[74]:
 
 
 # Applying Linear regression
 linear_model = LinearRegression()
 linear_model.fit(X_train, y_train)
 y_pred_linear = linear_model.predict(X_test)
+linear_r2 = r2_score(y_test, y_pred_linear)
 linear_mse = root_mean_squared_error(y_test, y_pred_linear)
 
 # Applying Polynomial Regression (degree 2)
@@ -358,8 +359,23 @@ X_poly_test = poly_features.transform(X_test)
 poly_model = LinearRegression()
 poly_model.fit(X_poly_train, y_train)
 y_pred_poly = poly_model.predict(X_poly_test)
+poly_r2 = r2_score(y_test, y_pred_poly)
 poly_mse = root_mean_squared_error(y_test, y_pred_poly)
 
+
+# In[75]:
+
+
+results = {
+    'Model': ['Linear Regression', 'Polynomial'],
+    'R2 Score': [linear_r2, poly_r2],
+    'RMSE': [linear_mse, poly_mse]
+}
+results_df = pd.DataFrame(results)
+display(results_df)
+
+
+# - <b>Our analysis indicates that HDI is inversely correlated with Poverty Rate, suggesting that improving HDI could reduce poverty levels. Unemployment Rate, however, showed a weaker relationship, indicating that other factors may also play a significant role.</b>
 
 # ## Resources and References
 # *What resources and references have you used for this project?*
@@ -367,7 +383,7 @@ poly_mse = root_mean_squared_error(y_test, y_pred_poly)
 # - Stack overflow
 # - ChatGPT for building column transformers
 
-# In[44]:
+# In[76]:
 
 
 # ⚠️ Make sure you run this cell at the end of your notebook before every submission!
