@@ -15,8 +15,11 @@
 # *What specific question are you seeking to answer with this project?*
 # *This is not the same as the questions you ask to limit the scope of the project.*
 # 📝 <!-- Answer Below -->
-# 
-# What are some large scale events that trigger a shift in poverty rates across the global populus? 
+# <ul>
+# - What is the relationship between HDI (Human Development Index) and Poverty Rate?<br>
+# - Does the Unemployment Rate significantly impact Poverty Rate?<br>
+# - Can we predict Poverty Rate using HDI, Unemployment Rate, or a combination of these variables?
+# </ul>
 
 # ## What would an answer look like?
 # *What is your hypothesized answer to your question?*
@@ -35,15 +38,24 @@
 # 
 # 
 
-# In[135]:
+# In[25]:
 
 
-## 1) Importing dataset 1 via API Call:
-url = 'https://rplumber.ilo.org/data/indicator/?id=UNE_DEAP_SEX_AGE_RT_A&timefrom=1970&type=label&format=.csv'
 import pandas as pd
 import matplotlib.pyplot as plt
-unemployment_data = pd.read_csv(url)
-unemployment_data.head(5)
+
+## 1) Importing dataset 1 via API Call:
+# url = 'https://rplumber.ilo.org/data/indicator/?id=UNE_DEAP_SEX_AGE_RT_A&timefrom=1970&type=label&format=.csv'
+
+# unemployment_data = pd.read_csv(url)
+# unemployment_data.head(5)
+
+## The link is now corrupted
+
+with open('assets/Unemployment/Unemployment.csv', encoding='utf-8-sig') as unemployment_data:
+    unemployment_data = pd.read_csv(unemployment_data, delimiter=',')
+    unemployment_data = pd.DataFrame(unemployment_data)
+
 
 ## 2) Importing dataset 2 via open:
 with open('assets/Global poverty and inequality dataset/pip_dataset.csv') as glo_poverty:
@@ -56,6 +68,7 @@ with open('assets/HDI/HDI_Full.csv') as hdi_full:
     hdi_full = pd.read_csv(hdi_full, delimiter=',')
     hdi_full = pd.DataFrame(hdi_full)
 hdi_full.head(5)
+unemployment_data.head(5)
 
 
 # ## Approach and Analysis
@@ -64,7 +77,7 @@ hdi_full.head(5)
 # 📝 <!-- Start Discussing the project here; you can add as many code cells as you need -->
 # I intend to make use of the vast arrays of metrics available in these 3 databases to find trends that either positively or negatively affect global poverty rates. One of the datasets that I'm using is the HDI dataset that has a comprehensive array of metrics, one of which is literacy rate. Along with this dataset, the two other datasets have similar metrics that one would think of as fundamental metrics that might affect the poverty rates. As the project is in its early stages, I don't have a solid roadmap, but I'm confident that I have picked the right datasets that will provide me a wealth of data to perform my analysis on.
 
-# In[136]:
+# In[26]:
 
 
 # Getting distribution on all three datasets
@@ -72,7 +85,7 @@ hdi_full.head(5)
 display(glo_poverty.describe(), unemployment_data.describe(), hdi_full.describe())
 
 
-# In[137]:
+# In[27]:
 
 
 # Getting information on all three datasets
@@ -80,7 +93,7 @@ display(glo_poverty.describe(), unemployment_data.describe(), hdi_full.describe(
 display(glo_poverty.info(), "\n", unemployment_data.info(), "\n", hdi_full.info())
 
 
-# In[138]:
+# In[28]:
 
 
 ###Finding the min and max value for 'year' to filter data based on availability.
@@ -102,7 +115,7 @@ display(hdi.sort_values(by='date').head(1), hdi.sort_values(by='date', ascending
 
 
 
-# In[139]:
+# In[29]:
 
 
 ### Filtering all dataframes to only include the dates present in all three dataframes
@@ -116,7 +129,7 @@ unemployment_data['date'].describe().loc[['min', 'max']],
 hdi['date'].describe().loc[['min', 'max']])
 
 
-# In[140]:
+# In[30]:
 
 
 ### Filtering datasets to only keep relevant records
@@ -129,7 +142,7 @@ display(glo_poverty_final['country'].nunique(), glo_poverty['country'].nunique()
 
 
 
-# In[141]:
+# In[31]:
 
 
 unemployment_data.head()
@@ -140,7 +153,7 @@ unemployment_data = unemployment_data[(unemployment_data['source.label'] == 'LFS
 display(unemployment_data.sort_values(by=['ref_area.label', 'date']).head(100))
 
 
-# In[142]:
+# In[32]:
 
 
 ### A line chart showing the trend of HDI in all countries with data available. Overall, we can see that a positive trend in the global scale.
@@ -151,7 +164,7 @@ for country, group_data in hdi.groupby('Country'):
 plt.show()
 
 
-# In[143]:
+# In[33]:
 
 
 # Comparing the last figure with HDI trend overtime for the countries with the top 10 countries with the least HDI values in 1991, we can see
@@ -193,7 +206,7 @@ plt.show()
 # <br><br>
 # <b>EDA:</b>
 
-# In[144]:
+# In[34]:
 
 
 display(glo_poverty_final.info(), hdi.info(), unemployment_data.info())
@@ -217,32 +230,32 @@ glo_poverty_final.head()
 
 
 
-# In[145]:
+# In[35]:
 
 
 display(hdi.head(), unemployment_final.head(), glo_poverty_final.head())
 
 
-# In[146]:
+# In[36]:
 
 
 import seaborn as sns
 sns.histplot(hdi['HDI'], kde=True)
 
 
-# In[147]:
+# In[37]:
 
 
 sns.histplot(unemployment_final['Unemployment_rate'], kde=True)
 
 
-# In[148]:
+# In[38]:
 
 
 sns.histplot(glo_poverty_final['Poverty_rate'], kde=True)
 
 
-# In[149]:
+# In[39]:
 
 
 merged_df = pd.merge(hdi, unemployment_final, on=['Country', 'date'], how='inner')
@@ -250,23 +263,47 @@ final_df = pd.merge(merged_df, glo_poverty_final, on=['Country', 'date'], how='i
 final_df.head()
 
 
-# In[151]:
+# In[40]:
 
 
 corr_matrix = final_df[['HDI', 'Unemployment_rate', 'Poverty_rate']].corr()
 sns.heatmap(corr_matrix, annot=True, cmap='coolwarm')
 
 
+# - Scatter plots
+
+# In[50]:
+
+
+import seaborn as sns
+sns.pairplot(hdi, diag_kind='kde', markers='+')
+plt.show()
+
+
+# In[51]:
+
+
+sns.pairplot(unemployment_final, diag_kind='kde', markers='+')
+plt.show()
+
+
+# In[52]:
+
+
+sns.pairplot(glo_poverty_final, diag_kind='kde', markers='+')
+plt.show()
+
+
 # <b>Prepare</b>
 
-# In[ ]:
+# In[41]:
 
 
 from sklearn.model_selection import train_test_split
 #Not using random split as we have a temporal component (date) that reflects yearly progression
 final_df = final_df.sort_values(by='date')
-train_data = final_df[final_df['date'] < '2012']
-test_data = final_df[final_df['date'] >= '2012']
+train_data = final_df[final_df['date'] < 2012]
+test_data = final_df[final_df['date'] >= 2012]
 X_train, y_train = train_data[['HDI', 'Unemployment_rate']], train_data['Poverty_rate']
 X_test, y_test = test_data[['HDI', 'Unemployment_rate']], test_data['Poverty_rate']
 
@@ -274,58 +311,63 @@ X_test, y_test = test_data[['HDI', 'Unemployment_rate']], test_data['Poverty_rat
 
 # - <b>Pipelines</b>
 
-# In[ ]:
+# In[42]:
 
 
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
-from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.metrics import root_mean_squared_error
 
-# Creating custom transformer to use in the pipeline to drop nulls and scale the values
+# Defining numerical and categorical columns
 numerical_columns = ['HDI', 'Unemployment_rate', 'Poverty_rate']
+categorical_columns = ['Country']
 
-class DropNullsTransformer(BaseEstimator, TransformerMixin):
-    def fit(self, X, y=None):
-        return self
-    
-    def transform(self, X):
-        return X.dropna()
-
-drop_nulls_pipeline = Pipeline(steps=[
-    ('dropnulls', DropNullsTransformer(),
-    ('scaler', StandardScaler()))
-])
-
-# Apply the pipeline that I just created
-df_cleaned = drop_nulls_pipeline.fit_transform(final_df)
-
-
-
-# Defining categorical columns that need encoding
-categorical_columns = ['Country', 'Region']
-
-cat_encoder = ColumnTransformer(
+# Creating pipeline
+preprocessing_pipeline = ColumnTransformer(
     transformers=[
+        ('num', StandardScaler(), numerical_columns),  
         ('cat', OneHotEncoder(), categorical_columns)
     ],
-    remainder='passthrough'
+    remainder='passthrough' 
 )
 
-# Pipeline to apply the cat encoder
-encode_pipeline = Pipeline(steps=[
-    ('encode', cat_encoder)
-])
+# Apply the pipeline
+df_cleaned_encoded = preprocessing_pipeline.fit_transform(final_df)
 
-df_encoded_final = encode_pipeline.fit_transform(df_cleaned)
+
+
+# - Analysis
+
+# In[43]:
+
+
+# Applying Linear regression
+linear_model = LinearRegression()
+linear_model.fit(X_train, y_train)
+y_pred_linear = linear_model.predict(X_test)
+linear_mse = root_mean_squared_error(y_test, y_pred_linear)
+
+# Applying Polynomial Regression (degree 2)
+degree = 2
+poly_features = PolynomialFeatures(degree=degree)
+X_poly_train = poly_features.fit_transform(X_train)
+X_poly_test = poly_features.transform(X_test)
+poly_model = LinearRegression()
+poly_model.fit(X_poly_train, y_train)
+y_pred_poly = poly_model.predict(X_poly_test)
+poly_mse = root_mean_squared_error(y_test, y_pred_poly)
 
 
 # ## Resources and References
 # *What resources and references have you used for this project?*
 # 📝 <!-- Answer Below -->
 # - Stack overflow
+# - ChatGPT for building column transformers
 
-# In[150]:
+# In[44]:
 
 
 # ⚠️ Make sure you run this cell at the end of your notebook before every submission!
